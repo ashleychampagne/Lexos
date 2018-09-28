@@ -47,7 +47,7 @@ export function submissionError (numFileRequired) {
 
   // Set the error message
   const activeFileNumTooFewErr = `You do not have enough active documents. Please 
-                                  activate at least ${numFileRequired} documents 
+                                  activate at least ${numFileRequired} document(s)
                                   using the <a href=${manageUrl}>Manage</a> tool 
                                   or <a href=${uploadUrl}>Upload</a> a new document.`
 
