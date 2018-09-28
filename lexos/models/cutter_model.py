@@ -5,7 +5,13 @@ from typing import NamedTuple, Optional, List, Dict
 from lexos.models.base_model import BaseModel
 from lexos.models.filemanager_model import FileManagerModel
 from lexos.models.matrix_model import FileIDContentMap
-from lexos.receivers.cutter_receiver import CutterFrontEndOptions
+from lexos.receivers.cutter_receiver import CutterFrontEndOptions, \
+    CutterReceiver
+
+
+class File(NamedTuple):
+    label: str
+    content: str
 
 
 class CutterTestOptions(NamedTuple):
@@ -36,48 +42,43 @@ class CutterModel(BaseModel):
             self._test_front_end_options = None
 
     @property
-    def _stats_option(self):
+    def _cutter_option(self) -> CutterFrontEndOptions:
         """:return: statistics front end option."""
-        return self._test_front_end_option \
-            if self._test_front_end_option is not None \
-            else StatsReceiver().options_from_front_end()
+        return self._test_front_end_options \
+            if self._test_front_end_options is not None \
+            else CutterReceiver().options_from_front_end()
 
     @property
     def _active_file_ids(self) -> List[int]:
-        if self._test_active_file_ids is not None:
-            return self._test_active_file_ids
-        else:
-            return self._
-
+        return self._test_active_file_ids \
+            if self._test_active_file_ids is not None \
+            else self._cutter_option.active_file_ids
 
     @property
-    def _active_id_passages_map(self) -> List[str]:
+    def _id_passages_map(self) -> List[str]:
         """Get the passages to cut.
 
         :return: the content of the passage as a string.
         """
-        # if test option is specified
-        if self._test_file_id_content_map is not None and \
-                self._test_front_end_options is not None:
-
-            active_file_ids = self._test_front_end_options.active_file_ids
-            file_id_content_map = self._test_file_id_content_map
-
-        # if test option is not specified, get option from front end
-        else:
-            file_id =
-            return FileManagerModel().load_file_manager() \
-                .get_content_of_active_with_id()
+        return self._test_file_id_content_map \
+            if self._test_file_id_content_map is not None \
+            else FileManagerModel().load_file_manager().\
+            get_content_of_active_with_id()
 
     @property
-    def _active_id_labels_map(self) -> List[str]:
+    def _id_labels_map(self) -> List[str]:
+        return self._test_file_id_label_map \
+            if self._test_file_id_label_map is not None \
+            else FileManagerModel().load_file_manager().\
+            get_active_labels_with_id()
 
     @property
-    def _options(self) -> RWAFrontEndOptions:
-        """Get the front end option packed as one named tuple.
+    def _active_file_label_content_map(self) -> List[File]:
 
-        :return: a RWAFrontEndOption packs all the frontend option.
-        """
-        return self._test_front_end_options \
-            if self._test_front_end_options is not None \
-            else RollingWindowsReceiver().options_from_front_end()
+        return [
+            File(
+                label=self._id_labels_map[active_id],
+                content=self._id_passages_map[active_id]
+            )
+            for active_id in self._active_file_ids
+        ]
