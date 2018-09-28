@@ -5,23 +5,36 @@ from typing import NamedTuple, Optional, List
 from lexos.receivers.base_receiver import BaseReceiver
 
 
-class CutterFrontEndOptions(NamedTuple):
-    """The typed tuple to hold cutter front end option."""
+class CutByChunkOptions(NamedTuple):
+    # The desired cutting type.
+    cut_type: str
 
     # The desired segment size of each chunk.
     cut_size: int
 
-    # The desired cutting type.
-    cut_type: str
-
     # The amount of overlapping content at segment boundaries.
-    overlap_size: float
+    overlap_size: int
 
     # The smallest size the last segment has to be to become a single chunk.
-    last_proportion: float
+    last_proportion: int
 
+
+class CutByNumberOfSegmentsOptions(NamedTuple):
+    number_of_segments: int
+
+
+class CutByMilestoneOptions(NamedTuple):
     # A milestone to cut by, it is none if it is not given from frontend.
     milestone: Optional[str]
+
+
+class CutterFrontEndOptions(NamedTuple):
+    """The typed tuple to hold cutter front end option."""
+    cut_by_chunk_option: Optional[CutByChunkOptions]
+
+    cut_by_milestone_option: Optional[CutByMilestoneOptions]
+
+    cut_by_number_of_segments_option: Optional[CutByNumberOfSegmentsOptions]
 
     # This is the list of active file ids.
     active_file_ids: List[int]
@@ -49,5 +62,35 @@ class CutterReceiver(BaseReceiver):
             [int(file_id)
              for file_id in active_file_ids_string_list if file_id != ""]
 
-        # Return stats front end option.
-        return CutterFrontEndOptions(active_file_ids=active_file_ids)
+        if self._front_end_data["method"] == "segments":
+            return CutterFrontEndOptions(
+                cut_by_chunk_option=None,
+                cut_by_milestone_option=None,
+                cut_by_number_of_segments_option=CutByNumberOfSegmentsOptions(
+                    number_of_segments=int(self._front_end_data["num-segment"])
+                ),
+                active_file_ids=active_file_ids
+            )
+
+        elif self._front_end_data["method"] == "milestone":
+            return CutterFrontEndOptions(
+                cut_by_chunk_option=None,
+                cut_by_number_of_segments_option=None,
+                cut_by_milestone_option=CutByMilestoneOptions(
+                    milestone=self._front_end_data["milestone"]
+                ),
+                active_file_ids=active_file_ids
+            )
+
+        else:
+            return CutterFrontEndOptions(
+                cut_by_milestone_option=None,
+                cut_by_number_of_segments_option=None,
+                cut_by_chunk_option=CutByChunkOptions(
+                    cut_type=self._front_end_data["method"],
+                    cut_size=int(self._front_end_data["size"]),
+                    overlap_size=int(self._front_end_data["overlap"]),
+                    last_proportion=int(self._front_end_data["last-prop"])
+                ),
+                active_file_ids=active_file_ids
+            )
