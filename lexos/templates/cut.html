@@ -3,7 +3,7 @@
 
 
 {% block head %}
-    <script type="text/javascript"
+    <script type="module"
             src="{{ url_for('static', filename='js/scripts_cut.js') }}?ver={{ version }}"></script>
     <meta id="manage-url" data-url="{{ url_for('manage.manage') }}">
     <meta id="upload-url" data-url="{{ url_for('upload.upload') }}">
@@ -16,6 +16,8 @@
 {% block title %}Cutter{% endblock %}
 
 {% block options %}
+    <!-- Hidden input to store active file ids. -->
+    <input type="hidden" id="active_file_ids" name="active_file_ids"/>
     <legend>Select Document(s) to cut</legend>
     <!-- Check box for files when there are files. -->
     {% if labels|len > 0 %}
@@ -76,9 +78,9 @@
         </label>
 
         <div id="cutting-option-for-general">
-            <label for="size-segment">Size of each segment:
-                <input type="number" name="size-segment" id="size-segment"
-                       min="1" value="{{ session['cut_option']['size'] }}">
+            <label for="size">Size of each segment:
+                <input type="number" name="size" id="size" min="1"
+                       value="{{ session['cut_option']['size'] }}">
                 <i class="fa fa-question-circle lexos-tooltip-trigger"
                    data-toggle="tooltip" data-html="true"
                    data-placement="right" data-container="body"
@@ -99,8 +101,8 @@
                 </i>
             </label>
             <br>
-            <label for="last_prop">Last segment size threshold in percentage:
-                <input type="number" name="last_prop" id="last_prop"
+            <label for="last-prop">Last segment size threshold in percentage:
+                <input type="number" name="last-prop" id="last-prop"
                        min="0" max="100"
                        value="{{ session['cut_option']['last_prop'] }}">
                 <i class="fa fa-question-circle lexos-tooltip-trigger"
@@ -175,7 +177,6 @@
        onclick="process('preview')"
        role="button">Preview Cuts</a>
     <a id="apply-btn" class="btn btn-success cutTrigger"
-       onclick="process('apply')"
        role="button">Apply Cuts</a>
     <a id="downloadCutting" class="btn btn-info" role="button">Download Cut
         Files</a>

@@ -4,6 +4,8 @@ from flask import request, session, render_template, Blueprint
 
 from lexos.helpers import constants as constants
 from lexos.managers import utility, session_manager as session_manager
+from lexos.models.cutter_model import CutterModel
+from lexos.models.filemanager_model import FileManagerModel
 from lexos.views.base_view import detect_active_docs
 
 # this is a flask blue print
@@ -14,7 +16,7 @@ from lexos.views.base_view import detect_active_docs
 cutter_blueprint = Blueprint('cutter', __name__)
 
 
-@cutter_blueprint.route("/cut", methods=["GET", "POST"])
+@cutter_blueprint.route("/cut", methods=["GET"])
 def cut():
     """ Handles the functionality of the cut page.
 
@@ -24,6 +26,9 @@ def cut():
     eventually to the browser.
     """
     # Detect the number of active documents.
+    # Get labels with their ids.
+    id_label_map = \
+        FileManagerModel().load_file_manager().get_active_labels_with_id()
     num_active_docs = detect_active_docs()
     file_manager = utility.load_file_manager()
     active = file_manager.get_active_files()
@@ -45,11 +50,12 @@ def cut():
         active_file_ids = []
     if request.method == "GET":
         # "GET" request occurs when the page is first loaded.
-        if 'cuttingoptions' not in session:
-            session['cuttingoptions'] = constants.DEFAULT_CUT_OPTIONS
+        if 'cut_option' not in session:
+            session['cut_option'] = constants.DEFAULT_CUT_OPTIONS
         previews = file_manager.get_previews_of_active()
         return render_template(
             'cut.html',
+            labels=id_label_map,
             previews=previews,
             num_active_files=len(previews),
             numChar=num_char,
@@ -81,6 +87,7 @@ def do_cutting():
 
     :return: cut files and their preview in a json object
     """
+    cut_model = CutterModel()
     file_manager = utility.load_file_manager()
     # The 'Preview Cuts' or 'Apply Cuts' button is clicked on cut.html.
     session_manager.cache_cutting_options()
