@@ -34,6 +34,7 @@
             </div>
         </div>
     {%- endif %}
+    <!-- Warning message when no files are found. -->
     {% if labels|len == 0 %}
         <span id="no-labels">You do not have enough active documents.
             Please activate at least 1 document using the
@@ -42,6 +43,7 @@
         </span>
     {%- endif %}
 
+    <!-- Set cutting options. -->
     <fieldset class="cutting-option">
         <legend>Cutting Options
             <a class="btn bttn bttn-video" title="Show tutorial video"
@@ -51,21 +53,23 @@
                 <i class="fa fa-video-camera fa-lg "></i>
             </a>
         </legend>
-        <label for="cut-type">Cut by
-            <select name="cut-type" id="cut-type">
-                <option value="tokens" {{ 'selected' if session['cut_option']['type'] == 'tokens' }}>
+
+        <!-- Set cutting method. -->
+        <label for="cut-method">Cut by
+            <select name="cut-method" id="cut-method">
+                <option value="tokens" {{ 'selected' if session['cut_option']['method'] == 'tokens' }}>
                     tokens per segment
                 </option>
-                <option value="characters" {{ 'selected' if session['cut_option']['type'] == 'characters' }}>
+                <option value="characters" {{ 'selected' if session['cut_option']['method'] == 'characters' }}>
                     characters per segment
                 </option>
-                <option value="lines" {{ 'selected' if session['cut_option']['type'] == 'lines' }}>
+                <option value="lines" {{ 'selected' if session['cut_option']['method'] == 'lines' }}>
                     lines per segment
                 </option>
-                <option value="segments" {{ 'selected' if session['cut_option']['type'] == 'segments' }}>
+                <option value="segments" {{ 'selected' if session['cut_option']['method'] == 'segments' }}>
                     number of segments
                 </option>
-                <option value="milestone" {{ 'selected' if session['cut_option']['type'] == 'milestone' }}>
+                <option value="milestone" {{ 'selected' if session['cut_option']['method'] == 'milestone' }}>
                     milestone
                 </option>
             </select>
