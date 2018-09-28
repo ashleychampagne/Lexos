@@ -186,7 +186,6 @@ DEFAULT_SCRUB_OPTIONS = {
         'scfileselect[]': ''}}
 
 # ------------------ ---- Constant for cutter model --------------------------
-
 DEFAULT_CUT_OPTIONS = {
     'size': '',
     'method': 'words',
