@@ -17,7 +17,7 @@
 
 {% block options %}
     <legend>Select Document(s) to cut</legend>
-    <!-- Check box for files. -->
+    <!-- Check box for files when there are files. -->
     {% if labels|len > 0 %}
         <div id="file-select-div" style="overflow:auto; max-height: 130px;">
             <div id="file-select-list">
@@ -35,142 +35,106 @@
         </div>
     {%- endif %}
     {% if labels|len == 0 %}
-        <span id="no-labels">No Documents Activated.</span>
+        <span id="no-labels">You do not have enough active documents.
+            Please activate at least 1 document using the
+            <a href={{ url_for('manage.manage') }}>Manage</a> tool or
+            <a href={{ url_for('upload.upload') }}>Upload</a> a new document.
+        </span>
     {%- endif %}
 
-    <fieldset class="cuttingoptionswrapper">
-        <legend>Default Cutting Options <a class="btn bttn bttn-video"
-                                           href="https://www.youtube.com/watch?v=-HpUbl1SzSA&list=PLEoAaCvaZOMMZD7x3SaQztPJxtpijv_gD&index=4"
-                                           target="_blank"
-                                           data-toggle="tooltip"
-                                           data-placement="right"
-                                           data-trigger="hover"
-                                           title="Show video"
-                                           style="margin: -10px 5px;"><i
-                class="fa fa-video-camera fa-lg "></i></a></legend>
-        <div id="cuttingdiv">
-            <div class="row cutting-radio-token">
-                <div class="col-md-6">
-                    <label class="radio sizeradio">
-                        <input type="radio" name="cutType"
-                               value="letters" {{ "checked" if session['cuttingoptions']['cutType'] == 'letters' }}>
-                        Characters/Segment
-                    </label>
-                </div>
-                <div class="col-md-6"
-                     style="padding-right:10%;text-align:right;">
-                    <label class="radio sizeradio" style="padding-right:10%;">
-                        <input type="radio" name="cutType"
-                               value="words" {{ "checked" if session['cuttingoptions']['cutType'] == 'words' or session['cuttingoptions']['cutType'] == 'milestone' }}/>
-                        Tokens&nbsp;&nbsp;/&nbsp;&nbsp;Segment
-                    </label>
-                </div>
-            </div>
-            <div class="row cutting-radio">
-                <div class="col-md-6">
-                    <label class="radio sizeradio">
-                        <input type="radio" name="cutType"
-                               value="lines" {{ "checked" if session['cuttingoptions']['cutType'] == 'lines' }}>
-                        Lines/Segment
-                    </label>
-                </div>
-                <div class="col-md-6"
-                     style="padding-right:10%;text-align:right;">
-                    <label class="radio numberradio">
-                        <input type="radio" name="cutType"
-                               value="number" {{ "checked" if session['cuttingoptions']['cutType'] == 'number' }}/>
-                        Segments/Document <i
-                            class="fa fa-question-circle lexos-tooltip-trigger"
-                            data-toggle="tooltip" data-html="true"
-                            data-placement="right" data-container="body"
-                            title="Lexos uses spaces between tokens to determine where to cut documents into the specified number, so it will not work if you used Scrubber to strip white spaces from your documents."
-                            style=""></i>
-                        <!-- Roses are red, segments are blue, / if you took out the white spaces, this isn't for you! -->
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8 col-md-offset-4"
-                     style="padding-right:10%;">
-                    <label class="pull-right">
-                        <span class="cut-label-text cut-label">{{ 'Number of Segments' if session['cuttingoptions']['cutType'] == 'number' else 'Segment Size' }}:</span>
-                        <input type="number" min="1" name="cutValue"
-                               class="cut-text-input" id="overallcutvalue"
-                               value="{{ session['cuttingoptions']['cutValue'] }}"/>
-                        <i class="fa fa-question-circle lexos-tooltip-trigger"
-                           data-toggle="tooltip" data-html="true"
-                           data-placement="right" data-container="body"
-                           title="A positive integer used to divide up the text (e.g. either the number of letters, words, or lines per segment, or the number of segments per document)."
-                           style=""></i>
-                    </label>
-                </div>
-            </div>
-            <div class="row overlap-div {{ 'transparent' if session['cuttingoptions']['cutType'] == 'number' }}">
-                <div class="col-md-8 col-md-offset-4"
-                     style="padding-right:10%;">
-                    <label class="pull-right cut-label">Overlap:
-                        <input type="number" min="0" name="cutOverlap"
-                               class="cut-text-input overlap-input"
-                               id="overallOverlapValue"
-                               value="{{ session['cuttingoptions']['cutOverlap'] }}" {{ "disabled" if session['cuttingoptions']['cutType'] == 'number' }}/>
-                        <i class="fa fa-question-circle lexos-tooltip-trigger"
-                           data-toggle="tooltip" data-html="true"
-                           data-placement="right" data-container="body"
-                           title="Amount of overlapping content at segment boundaries (a number smaller than the overall size of the segment)."
-                           style=""></i>
-                    </label>
-                </div>
-            </div>
-            <div class="row lastprop-div {{ 'transparent' if session['cuttingoptions']['cutType'] == 'number' }}">
-                <div class="col-md-8 col-md-offset-4"
-                     style="padding-right:10%; padding-left:5px">
-                    <label class="pull-right txt-right cut-label">Last Segment
-                        Size Threshold:
-                        <input type="number" min="0" max="100"
-                               name="cutLastProp"
-                               class="cut-text-input lastprop-input"
-                               value="{{ session['cuttingoptions']['cutLastProp'] }}" {{ "disabled" if session['cuttingoptions']['cutType'] == 'number' }}/>
-                        %
-                        <i class="fa fa-question-circle lexos-tooltip-trigger"
-                           data-toggle="tooltip" data-html="true"
-                           data-placement="right" data-container="body"
-                           title="The size of the last segment must be at least as large as the given percentage (threshold) of other segment sizes.
-                            If the length of the last segment is found to be too small, it will be attached to the previous segment."
-                           style=""></i>
-                    </label>
-                </div>
-            </div>
+    <fieldset class="cutting-option">
+        <legend>Cutting Options
+            <a class="btn bttn bttn-video" title="Show tutorial video"
+               href="https://www.youtube.com/watch?v=-HpUbl1SzSA&list=PLEoAaCvaZOMMZD7x3SaQztPJxtpijv_gD&index=4"
+               target="_blank" data-toggle="tooltip" data-placement="right"
+               data-trigger="hover" style="margin: -10px 5px;">
+                <i class="fa fa-video-camera fa-lg "></i>
+            </a>
+        </legend>
+        <label for="cut-type">Cut by
+            <select name="cut-type" id="cut-type">
+                <option value="tokens" {{ 'selected' if session['cut_option']['type'] == 'tokens' }}>
+                    tokens per segment
+                </option>
+                <option value="characters" {{ 'selected' if session['cut_option']['type'] == 'characters' }}>
+                    characters per segment
+                </option>
+                <option value="lines" {{ 'selected' if session['cut_option']['type'] == 'lines' }}>
+                    lines per segment
+                </option>
+                <option value="segments" {{ 'selected' if session['cut_option']['type'] == 'segments' }}>
+                    number of segments
+                </option>
+                <option value="milestone" {{ 'selected' if session['cut_option']['type'] == 'milestone' }}>
+                    milestone
+                </option>
+            </select>
+        </label>
+
+        <div id="culling-option-for-general">
+            <label for="size-segment">Size of each segment:
+                <input type="number" name="size-segment" id="size-segment"
+                       min="1" value="{{ session['cut_option']['size'] }}">
+                <i class="fa fa-question-circle lexos-tooltip-trigger"
+                   data-toggle="tooltip" data-html="true"
+                   data-placement="right" data-container="body"
+                   title="A positive integer used to divide up the text
+                          (e.g. either the number of letters, words, or lines
+                          per segment, or the number of segments per document).">
+                </i>
+            </label>
+            <br>
+            <label for="overlap">Size of overlap between segments:
+                <input type="number" name="overlap" id="overlap" min="0"
+                       value="{{ session['cut_option']['overlap'] }}">
+                <i class="fa fa-question-circle lexos-tooltip-trigger"
+                   data-toggle="tooltip" data-html="true"
+                   data-placement="right" data-container="body"
+                   title="Amount of overlapping content at segment boundaries
+                          (a number smaller than the overall size of the segment).">
+                </i>
+            </label>
+            <br>
+            <label for="last_prop">Last segment size threshold in percentage:
+                <input type="number" name="last_prop" id="last_prop"
+                       min="0" max="100"
+                       value="{{ session['cut_option']['last_prop'] }}">
+                <i class="fa fa-question-circle lexos-tooltip-trigger"
+                   data-toggle="tooltip" data-html="true"
+                   data-placement="right" data-container="body"
+                   title="The size of the last segment must be at least as
+                              large as the given percentage (threshold) of other
+                              segment sizes. If the length of the last segment
+                              is found to be too small, it will be attached to
+                              the previous segment.">
+                </i>
+            </label>
         </div>
 
-        <div class="row" id="cutByMSdiv">
-            <div class="col-sm-4" style="padding-left:3%;">
-                <label class="pull-left txt-left">
-                    <input type="checkbox" name="cutByMS"
-                           id="cutByMS" {{ 'checked' if session['cuttingoptions']['cutType'] == 'milestone' }}/>Cut
-                    by Milestone
-                    <i class="fa fa-question-circle lexos-tooltip-trigger"
-                       data-toggle="tooltip" data-html="true"
-                       data-placement="right" data-container="body"
-                       title="Split the document into segments at each appearance of the provided string. Child segments will not contain the Milestone delimiter."
-                       style="padding-left:4px;margin-right:0;"></i>
-                </label>
-            </div>
-            <div class="col-sm-8">
-            <span id="MSoptspan"
-                  class="{{ 'hidden' if session['cuttingoptions']['cutType'] != 'milestone' }}">
-                Cut documents on this term <input type="text" name="MScutWord"
-                                                  id="MScutWord"
-                                                  value="{{ session['cuttingoptions']['cutValue'] if session['cuttingoptions']['cutType'] == 'milestone' else '' }}"/>
-            </span>
-            </div>
+        <div id="cutting-option-for-segments">
+            <span>Number of Segments: </span>
+            <label for="num-segment">
+                <input type="number" name="num-segment" id="num-segment"
+                       min="1" value="{{ session['cut_option']['size'] }}"/>
+                <i class="fa fa-question-circle lexos-tooltip-trigger"
+                   data-toggle="tooltip" data-html="true"
+                   data-placement="right" data-container="body"
+                   title="A positive integer used to divide up the text evenly into chunks.">
+                </i>
+            </label>
         </div>
-        <div id="cut-loading-div" style="visibility:hidden">
-            <i class="fa fa-spinner fa-spin fa-2x fa-fw"
-               style="color: #0068AF;"></i>
-            <span class="sr-only">Loading...</span>
+
+        <div id="cutting-option-for-milestone">
+            <span>
+                Cut documents on this term
+                <label for="milestone-value">
+                    <input type="text" name="milestone-value"
+                           id="milestone-value"
+                           value="{{ session['cut_option']['milestone'] }}">
+                </label>
+            </span>
         </div>
     </fieldset>
-
 {% endblock %}
 
 {% block previews %}
