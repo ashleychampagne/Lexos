@@ -87,16 +87,6 @@ OPTUPLOADNAMES = (
 
 # for xml handling
 
-# for cut
-WHITESPACE = ['\n', '\t', ' ', '', '\u3000']
-
-CUTINPUTAREAS = (
-    'cut_type',
-    'lastprop',
-    'overlap',
-    'cutting_value',
-    'cutsetnaming')
-
 # for base analyze
 ANALYZEBOXES = ('mfwcheckbox', 'cullcheckbox', 'greyword', 'inWordsOnly')
 ANALYZEINPUTS = (
@@ -195,8 +185,14 @@ DEFAULT_SCRUB_OPTIONS = {
         'consfileselect[]': '',
         'scfileselect[]': ''}}
 
+# ------------------ ---- Constant for cutter model --------------------------
+
 DEFAULT_CUT_OPTIONS = {
-    'cutType': 'words', 'cutValue': '', 'cutOverlap': '0', 'cutLastProp': '50'
+    'size': '',
+    'method': 'words',
+    'overlap': '0',
+    'last_prop': '50',
+    'milestone': ''
 }
 
 DEFAULT_CSV_OPTIONS = {
