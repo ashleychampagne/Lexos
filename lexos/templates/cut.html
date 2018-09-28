@@ -10,17 +10,44 @@
     <meta id="num-word" data-numWord="{{ numWord|default(0) }}">
     <meta id="num-char" data-numChar="{{ numChar|default(0) }}">
     <meta id="num-line" data-numLine="{{ numLine|default(0) }}">
-    <meta id="active-file-ids" data-activeFileIDs="{{ activeFileIDs|default(0) }}">
+    <meta id="active-file-ids" data-activeFileIDs="{{ activeFileIDs }}">
 {% endblock %}
 
 {% block title %}Cutter{% endblock %}
 
 {% block options %}
-
-    <input type="hidden" id="num_active_files" value="{{ num_active_files }}"/>
+    <legend>Select Document(s) to cut</legend>
+    <!-- Check box for files. -->
+    {% if labels|len > 0 %}
+        <div id="file-select-div" style="overflow:auto; max-height: 130px;">
+            <div id="file-select-list">
+                {% for fileID, label in labels.items() %}
+                    <div class="each-file">
+                        <label id="file-select-label"
+                               style="margin: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ label }}
+                            <input type="checkbox" class="file-select" checked
+                                   value="{{ fileID }}">
+                        </label>
+                    </div>
+                {%- endfor %}
+            </div>
+        </div>
+    {%- endif %}
+    {% if labels|len == 0 %}
+        <span id="no-labels">No Documents Activated.</span>
+    {%- endif %}
 
     <fieldset class="cuttingoptionswrapper">
-        <legend>Default Cutting Options <a class="btn bttn bttn-video" href="https://www.youtube.com/watch?v=-HpUbl1SzSA&list=PLEoAaCvaZOMMZD7x3SaQztPJxtpijv_gD&index=4" target="_blank" data-toggle="tooltip" data-placement="right" data-trigger="hover" title="Show video" style="margin: -10px 5px;"><i class="fa fa-video-camera fa-lg "></i></a></legend>
+        <legend>Default Cutting Options <a class="btn bttn bttn-video"
+                                           href="https://www.youtube.com/watch?v=-HpUbl1SzSA&list=PLEoAaCvaZOMMZD7x3SaQztPJxtpijv_gD&index=4"
+                                           target="_blank"
+                                           data-toggle="tooltip"
+                                           data-placement="right"
+                                           data-trigger="hover"
+                                           title="Show video"
+                                           style="margin: -10px 5px;"><i
+                class="fa fa-video-camera fa-lg "></i></a></legend>
         <div id="cuttingdiv">
             <div class="row cutting-radio-token">
                 <div class="col-md-6">
@@ -138,10 +165,10 @@
             </div>
         </div>
         <div id="cut-loading-div" style="visibility:hidden">
-        <i class="fa fa-spinner fa-spin fa-2x fa-fw"
-           style="color: #0068AF;"></i>
-        <span class="sr-only">Loading...</span>
-    </div>
+            <i class="fa fa-spinner fa-spin fa-2x fa-fw"
+               style="color: #0068AF;"></i>
+            <span class="sr-only">Loading...</span>
+        </div>
     </fieldset>
 
 {% endblock %}
@@ -298,9 +325,11 @@
 {% endblock %}
 
 {% block actions %}
-    <a id="preview-btn" class="btn btn-primary cutTrigger" onclick="process('preview')"
+    <a id="preview-btn" class="btn btn-primary cutTrigger"
+       onclick="process('preview')"
        role="button">Preview Cuts</a>
-    <a id="apply-btn" class="btn btn-success cutTrigger" onclick="process('apply')"
+    <a id="apply-btn" class="btn btn-success cutTrigger"
+       onclick="process('apply')"
        role="button">Apply Cuts</a>
     <a id="downloadCutting" class="btn btn-info" role="button">Download Cut
         Files</a>
