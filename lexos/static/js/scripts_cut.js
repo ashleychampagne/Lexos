@@ -1,3 +1,22 @@
+function toggle_option() {
+  const selectedValue = $("#cut-method option:selected").val()
+  if (selectedValue === "segments") {
+    $("#cutting-option-for-general").hide()
+    $("#cutting-option-for-segments").show()
+    $("#cutting-option-for-milestone").hide()
+  } else if (selectedValue === "milestone") {
+    $("#cutting-option-for-general").hide()
+    $("#cutting-option-for-segments").hide()
+    $("#cutting-option-for-milestone").show()
+  } else {
+    $("#cutting-option-for-general").show()
+    $("#cutting-option-for-segments").hide()
+    $("#cutting-option-for-milestone").hide()
+  }
+}
+
+
+
 /**
  * This function gives the user an appropriate error message if applicable.
  * @returns {void}
@@ -458,6 +477,9 @@ function showMilestoneOptions () {
  * Document ready function.
  */
 $(function () {
+  // New functions start here.
+  $('#cut-method').change(function () { toggle_option() })
+
   $('#actions').addClass('actions-cut')
 
   // Toggle cutting options when radio buttons with different classes are clicked
