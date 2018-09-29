@@ -1,7 +1,6 @@
 """This is the receiver for the cutter model."""
 
 from typing import NamedTuple, Optional, List
-
 from lexos.receivers.base_receiver import BaseReceiver
 
 
@@ -53,6 +52,7 @@ class CutterReceiver(BaseReceiver):
         :return: a CutterFrontEndOptions object that contains all desired
         front end options for the cutter model.
         """
+        A = self._front_end_data
         # Get active file ids from front end as a string.
         active_file_ids_string = self._front_end_data["active_file_ids"]
         # Split the file ids.
@@ -88,7 +88,7 @@ class CutterReceiver(BaseReceiver):
                 cut_by_number_of_segments_option=None,
                 cut_by_chunk_option=CutByChunkOptions(
                     cut_type=self._front_end_data["method"],
-                    cut_size=int(self._front_end_data["size"]),
+                    cut_size=int(self._front_end_data["chunk-size"]),
                     overlap_size=int(self._front_end_data["overlap"]),
                     last_proportion=int(self._front_end_data["last-prop"])
                 ),
