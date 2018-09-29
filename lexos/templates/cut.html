@@ -23,13 +23,13 @@
     {% if labels|len > 0 %}
         <div id="file-select-div" style="overflow:auto; max-height: 130px;">
             <div id="file-select-list">
-                {% for fileID, label in labels.items() %}
+                {% for file_id, label in labels.items() %}
                     <div class="each-file">
                         <label id="file-select-label"
                                style="margin: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             {{ label }}
                             <input type="checkbox" class="file-select" checked
-                                   value="{{ fileID }}">
+                                   value="{{ file_id }}">
                         </label>
                     </div>
                 {%- endfor %}
@@ -122,7 +122,8 @@
             <span>Number of Segments: </span>
             <label for="num-segment">
                 <input type="number" name="num-segment" id="num-segment"
-                       min="1" value="{{ session['cut_option']['segment_size'] }}"/>
+                       min="1"
+                       value="{{ session['cut_option']['segment_size'] }}"/>
                 <i class="fa fa-question-circle lexos-tooltip-trigger"
                    data-toggle="tooltip" data-html="true"
                    data-placement="right" data-container="body"
@@ -146,33 +147,23 @@
 {% endblock %}
 
 {% block previews %}
-    {% for (fileID, filename, doclabel, fileContents) in previews %}
-        <fieldset class="individualpreviewwrapper">
-
-            <legend class="individualpreviewlegend"
-                    style="color:#999;">{{ doclabel|truncate(36, True) }}
-
+    {% for (file_id, _, label, file_content) in previews %}
+        <fieldset class="file-preview-wrapper" id={{ file_id }}>
+            <legend class="file-label" style="color:#999;">
+                {{ label|truncate(36, True) }}
             </legend>
-
-
-            {% if fileContents is string %}
-                <div class="filecontents">{{ fileContents|nl2br }}</div>
-                <!-- Keep this with no whitespace! -->
-            {% elif fileContents is sequence %}
-                {% for (segmentLabel, segmentString) in fileContents %}
-                    <div class="filechunk">
-                        <span class="filechunklabel">{{ segmentLabel|truncate(30, True) }}</span>
-                        <div>{{ segmentString }}</div>
-                    </div>
-                {% endfor %}
-
-            {% endif %}
+            <div>
+                {{ file_content|nl2br }}
+            </div>
         </fieldset>
-
     {% endfor %}
 {% endblock %}
 
 {% block actions %}
     <input type="button" class="btn btn-primary" id="apply-cut"
            name="apply-cut" value="Apply Cuts"/>
+    <input type="button" class="btn btn-info" id="preview-cut"
+           name="preview-cut" value="Preview Cuts"/>
+    <input type="button" class="btn btn-success" id="download-cut"
+           name="download-cut" value="Download Cuts"/>
 {% endblock %}
