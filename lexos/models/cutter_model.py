@@ -349,3 +349,59 @@ class CutterModel(BaseModel):
         final_seg_list = text.split(sep=milestone)
 
         return final_seg_list
+#
+#     def cut(self) -> List[str]:
+#         if self._cutter_option.cut_by_milestone_option is not None:
+#             return self.cut_by_milestone(
+#                 text=self._id_passages_map
+#             )
+#
+# def cut(text: str, cutting_value: str, cutting_type: str, overlap: str,
+#         last_prop_percent: str) -> List[str]:
+#     """Cuts each text string into various segments.
+#
+#     Cutting according to the options chosen by the user.
+#     :param text: A string with the text to be split.
+#     :param cutting_value: The value by which to cut the texts by.
+#     :param cutting_type: A string representing which cutting method to use.
+#     :param overlap: A unicode string representing the number of words to be
+#            overlapped between each text segment.
+#     :param last_prop_percent: A unicode string representing the minimum
+#            proportion percentage the last segment has to be to not get
+#            assimilated by the previous.
+#     :return A list of strings, each representing a segment of the original.
+#     """
+#
+#     # pre-condition assertion
+#     assert cutting_type == "milestone" or cutting_type == "letters" or \
+#         cutting_type == "words" or cutting_type == "lines" or \
+#         cutting_type == "number", INVALID_CUTTING_TYPE_MESSAGE
+#
+#     # standardize parameters
+#     cutting_type = str(cutting_type)
+#     overlap = int(overlap)
+#     last_prop_percent = float(last_prop_percent.rstrip('%')) / 100
+#
+#     # distribute cutting method by input cutting value
+#     if cutting_type != 'milestone':
+#         cutting_value = int(cutting_value)
+#
+#     if cutting_type == 'letters':
+#         string_list = cut_by_characters(text=text, seg_size=cutting_value,
+#                                         overlap=overlap,
+#                                         last_prop=last_prop_percent)
+#     elif cutting_type == 'words':
+#         string_list = cut_by_words(text=text, seg_size=cutting_value,
+#                                    overlap=overlap,
+#                                    last_prop=last_prop_percent)
+#     elif cutting_type == 'lines':
+#         string_list = cut_by_lines(text=text, seg_size=cutting_value,
+#                                    overlap=overlap,
+#                                    last_prop=last_prop_percent)
+#     elif cutting_type == 'milestone':
+#         string_list = cut_by_milestone(text=text, milestone=cutting_value)
+#     elif cutting_type == 'number':
+#         string_list = cut_by_segments(text=text, num_segment=cutting_value)
+#
+#     # noinspection PyUnboundLocalVariable
+#     return string_list
