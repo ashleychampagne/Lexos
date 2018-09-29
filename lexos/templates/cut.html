@@ -57,8 +57,8 @@
         </legend>
 
         <!-- Set cutting method. -->
-        <label for="cut-method">Cut by
-            <select name="cut-method" id="cut-method">
+        <label for="method">Cut by
+            <select name="method" id="method">
                 <option value="tokens" {{ 'selected' if session['cut_option']['method'] == 'tokens' }}>
                     tokens per segment
                 </option>
@@ -78,9 +78,9 @@
         </label>
 
         <div id="cutting-option-for-general">
-            <label for="size">Size of each segment:
-                <input type="number" name="size" id="size" min="1"
-                       value="{{ session['cut_option']['size'] }}">
+            <label for="chunk-size">Size of each segment:
+                <input type="number" name="chunk-size" id="chunk-size" min="1"
+                       value="{{ session['cut_option']['chunk_size'] }}">
                 <i class="fa fa-question-circle lexos-tooltip-trigger"
                    data-toggle="tooltip" data-html="true"
                    data-placement="right" data-container="body"
@@ -122,7 +122,7 @@
             <span>Number of Segments: </span>
             <label for="num-segment">
                 <input type="number" name="num-segment" id="num-segment"
-                       min="1" value="{{ session['cut_option']['size'] }}"/>
+                       min="1" value="{{ session['cut_option']['segment_size'] }}"/>
                 <i class="fa fa-question-circle lexos-tooltip-trigger"
                    data-toggle="tooltip" data-html="true"
                    data-placement="right" data-container="body"
@@ -173,15 +173,6 @@
 {% endblock %}
 
 {% block actions %}
-    <a id="preview-btn" class="btn btn-primary cutTrigger"
-       onclick="process('preview')"
-       role="button">Preview Cuts</a>
-    <a id="apply-btn" class="btn btn-success cutTrigger"
-       role="button">Apply Cuts</a>
-    <a id="downloadCutting" class="btn btn-info" role="button">Download Cut
-        Files</a>
-    <input type="hidden" id="formAction" name="formAction" value="preview">
-    <input type="hidden" id="hasErrors" name="hasErrors" value="false">
-    <input type="hidden" id="needsWarning" name="needsWarning" value="false">
+    <input type="button" class="btn btn-primary" id="apply-cut"
+           name="apply-cut" value="Apply Cuts"/>
 {% endblock %}
-{ endblock }
