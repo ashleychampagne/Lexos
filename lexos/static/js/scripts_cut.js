@@ -1,34 +1,37 @@
 import * as utility from './utility.js'
 
-function toggle_option() {
-  const selectedValue = $("#cut-method option:selected").val()
-  if (selectedValue === "segments") {
-    $("#cutting-option-for-general").hide()
-    $("#cutting-option-for-segments").show()
-    $("#cutting-option-for-milestone").hide()
-  } else if (selectedValue === "milestone") {
-    $("#cutting-option-for-general").hide()
-    $("#cutting-option-for-segments").hide()
-    $("#cutting-option-for-milestone").show()
+function toggle_option () {
+  const selectedValue = $('#cut-method option:selected').val()
+  if (selectedValue === 'segments') {
+    $('#cutting-option-for-general').hide()
+    $('#cutting-option-for-segments').show()
+    $('#cutting-option-for-milestone').hide()
+  } else if (selectedValue === 'milestone') {
+    $('#cutting-option-for-general').hide()
+    $('#cutting-option-for-segments').hide()
+    $('#cutting-option-for-milestone').show()
   } else {
-    $("#cutting-option-for-general").show()
-    $("#cutting-option-for-segments").hide()
-    $("#cutting-option-for-milestone").hide()
+    $('#cutting-option-for-general').show()
+    $('#cutting-option-for-segments').hide()
+    $('#cutting-option-for-milestone').hide()
   }
 }
 
+function toggle_file_preview (clickedFileId) {
+  $(`#${clickedFileId}`).toggle('drop')
+}
 
-function get_checked_file_id() {
-    // Get all the checked files.
-    const checkedFiles = $('.each-file :checked')
-    // Set a variable to store checked file ids.
-    let activeFileIds = ''
-    // Store checked file ids by putting a blank between each id.
-    checkedFiles.each(function () {
-      activeFileIds += `${$(this).val()} `
-    })
-    // Store the variable to input field.
-    $('#active_file_ids').val(activeFileIds)
+function get_checked_file_id () {
+  // Get all the checked files.
+  const checkedFiles = $('.each-file :checked')
+  // Set a variable to store checked file ids.
+  let activeFileIds = ''
+  // Store checked file ids by putting a blank between each id.
+  checkedFiles.each(function () {
+    activeFileIds += `${$(this).val()} `
+  })
+  // Store the variable to input field.
+  $('#active_file_ids').val(activeFileIds)
 }
 
 /**
@@ -46,23 +49,24 @@ function applyCut () {
         console.log(response)
       })
     .fail(
-      function (jqXHR, textStatus, errorThrown) {
-        console.log('textStatus: ' + textStatus)
-        console.log('errorThrown: ' + errorThrown)
+      function () {
         utility.runModal('Error encountered while cutting the files.')
       })
 }
-
 
 /**
  * Document ready function.
  */
 $(function () {
   // New functions start here.
-  $('#cut-method').change(function () { toggle_option() })
-  get_checked_file_id()
+  $('#cut-method').change(function () {
+    toggle_option()
+  })
+  $('.file-select').click(function () {
+    toggle_file_preview($(this).val())
+  })
   $('#apply-cut').click(function () {
+    get_checked_file_id()
     applyCut()
   })
-
 })
