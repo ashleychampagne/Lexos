@@ -1,12 +1,8 @@
-import json
-
-from flask import request, session, render_template, Blueprint
-
-from lexos.helpers import constants as constants
-from lexos.managers import utility, session_manager as session_manager
+from flask import session, render_template, Blueprint
+from lexos.helpers import constants
+from lexos.managers import session_manager
 from lexos.models.cutter_model import CutterModel
 from lexos.models.filemanager_model import FileManagerModel
-from lexos.views.base_view import detect_active_docs
 
 # this is a flask blue print
 # it helps us to manage groups of views
@@ -25,48 +21,24 @@ def cut():
     :return: a response object (often a render_template call) to flask and
     eventually to the browser.
     """
-    # Detect the number of active documents.
-    # Get labels with their ids.
-    id_label_map = \
-        FileManagerModel().load_file_manager().get_active_labels_with_id()
-    num_active_docs = detect_active_docs()
-    file_manager = utility.load_file_manager()
-    active = file_manager.get_active_files()
-    if len(active) > 0:
-        num_char = [x.num_letters() for x in active]
-        num_word = [x.num_words() for x in active]
-        num_line = [x.num_lines() for x in active]
-        max_char = max(num_char)
-        max_word = max(num_word)
-        max_line = max(num_line)
-        active_file_ids = [lfile.id for lfile in active]
-    else:
-        num_char = []
-        num_word = []
-        num_line = []
-        max_char = 0
-        max_word = 0
-        max_line = 0
-        active_file_ids = []
-    if request.method == "GET":
-        # "GET" request occurs when the page is first loaded.
-        if 'cut_option' not in session:
-            session['cut_option'] = constants.DEFAULT_CUT_OPTIONS
-        previews = file_manager.get_previews_of_active()
-        return render_template(
-            'cut.html',
-            labels=id_label_map,
-            previews=previews,
-            num_active_files=len(previews),
-            numChar=num_char,
-            numWord=num_word,
-            numLine=num_line,
-            maxChar=max_char,
-            maxWord=max_word,
-            maxLine=max_line,
-            activeFileIDs=active_file_ids,
-            itm="cut",
-            numActiveDocs=num_active_docs)
+    # Load the file manager.
+    file_manager = FileManagerModel().load_file_manager()
+
+    # Get active file labels with the corresponding id.
+    id_label_map = file_manager.get_active_labels_with_id()
+
+    # Get the file preview.
+    previews = file_manager.get_previews_of_active()
+
+    # Fill the default cut option into the session.
+    if 'cut_option' not in session:
+        session['cut_option'] = constants.DEFAULT_CUT_OPTIONS
+
+    return render_template(
+        'cut.html',
+        itm="cut",
+        labels=id_label_map,
+        previews=previews)
 
 
 @cutter_blueprint.route("/downloadCutting", methods=["GET", "POST"])
@@ -75,27 +47,19 @@ def download_cutting():
 
     :return: a .zip with all the cut files
     """
-    # The 'Download Segmented Files' button is clicked on cut.html
-    # sends zipped files to downloads folder
-    file_manager = utility.load_file_manager()
+    # Load the file manager.
+    file_manager = FileManagerModel().load_file_manager()
+
     return file_manager.zip_active_files('cut_files.zip')
 
 
-@cutter_blueprint.route("/doCutting", methods=["GET", "POST"])
-def do_cutting():
+@cutter_blueprint.route("/apply_cut", methods=["POST"])
+def apply_cut():
     """cuts the files.
 
     :return: cut files and their preview in a json object
     """
-    cut_model = CutterModel()
-    file_manager = utility.load_file_manager()
-    # The 'Preview Cuts' or 'Apply Cuts' button is clicked on cut.html.
     session_manager.cache_cutting_options()
-    # Saving changes only if action = apply
-    saving_changes = True if request.form['action'] == 'apply' else False
-    previews = file_manager.cut_files(saving_changes=saving_changes)
-    if saving_changes:
-        utility.save_file_manager(file_manager)
-    data = {"data": previews}
-    data = json.dumps(data)
-    return data
+    A = CutterModel()
+    B = A._cutter_option
+    return "ABC"
