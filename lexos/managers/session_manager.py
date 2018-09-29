@@ -162,19 +162,26 @@ def cache_scrub_options():
 def cache_cutting_options():
     """Stores cutting options from request.form in session cookie object."""
 
-    session['cuttingoptions'] = {
-        'cutType': request.form['cutType'],
-
-        'cutValue': request.form['cutValue'],
-
-        'cutOverlap': request.form['cutOverlap']
-        if 'cutOverlap' in request.form else '0',
-
-        'cutLastProp': request.form['cutLastProp']
-        if 'cutLastProp' in request.form else '50'}
-    if "cutByMS" in request.form:
-        session['cuttingoptions']['cutType'] = "milestone"
-        session['cuttingoptions']['cutValue'] = request.form['MScutWord']
+    for possible_input in const.CUT_INPUT:
+        session['cut_option'] = {
+            possible_input: request.form[possible_input]
+            if possible_input in request.form
+            else const.DEFAULT_CUT_OPTIONS[possible_input]
+        }
+    #
+    # session['cuttingoptions'] = {
+    #     'cutType': request.form['cutType'],
+    #
+    #     'cutValue': request.form['cutValue'],
+    #
+    #     'cutOverlap': request.form['cutOverlap']
+    #     if 'cutOverlap' in request.form else '0',
+    #
+    #     'cutLastProp': request.form['cutLastProp']
+    #     if 'cutLastProp' in request.form else '50'}
+    # if "cutByMS" in request.form:
+    #     session['cuttingoptions']['cutType'] = "milestone"
+    #     session['cuttingoptions']['cutValue'] = request.form['MScutWord']
 
 
 def cache_csv_options():
