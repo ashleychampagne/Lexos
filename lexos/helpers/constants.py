@@ -186,11 +186,22 @@ DEFAULT_SCRUB_OPTIONS = {
         'scfileselect[]': ''}}
 
 # ------------------ ---- Constant for cutter model --------------------------
+# for BCT analysis
+CUT_INPUT = [
+    'method',
+    'overlap',
+    'last_prop',
+    'chunk_size',
+    'segment_size',
+    'milestone'
+]
+
 DEFAULT_CUT_OPTIONS = {
-    'size': '',
     'method': 'words',
     'overlap': '0',
     'last_prop': '50',
+    'chunk_size': '',
+    'segment_size': '',
     'milestone': ''
 }
 
