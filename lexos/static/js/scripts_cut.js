@@ -46,12 +46,19 @@ function applyCut () {
   utility.sendAjaxRequest('/apply_cut', form)
     .done(
       function (response) {
-        console.log(response)
-      })
+        const content = response.result.map(function (file) {
+          return `<fieldset class="file-preview-wrapper"><legend class="file-label" style="color: #999">${file[0]}</legend><div>${file[1]}</div></fieldset>`
+        })
+
+        $('#preview-body').html(content)
+      }
+    )
+
     .fail(
       function () {
         utility.runModal('Error encountered while cutting the files.')
-      })
+      }
+    )
 }
 
 /**
