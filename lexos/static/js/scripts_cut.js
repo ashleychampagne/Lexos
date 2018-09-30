@@ -1,17 +1,17 @@
 import * as utility from './utility.js'
 
 function toggle_option () {
-  const selectedValue = $('#cut-method option:selected').val()
+  const selectedValue = $('#method option:selected').val()
   if (selectedValue === 'segments') {
     $('#cutting-option-for-general').hide()
-    $('#cutting-option-for-segments').show()
+    $('#cutting-option-for-segments').show('slide')
     $('#cutting-option-for-milestone').hide()
   } else if (selectedValue === 'milestone') {
     $('#cutting-option-for-general').hide()
     $('#cutting-option-for-segments').hide()
-    $('#cutting-option-for-milestone').show()
+    $('#cutting-option-for-milestone').show('slide')
   } else {
-    $('#cutting-option-for-general').show()
+    $('#cutting-option-for-general').show('slide')
     $('#cutting-option-for-segments').hide()
     $('#cutting-option-for-milestone').hide()
   }
@@ -59,7 +59,7 @@ function applyCut () {
  */
 $(function () {
   // New functions start here.
-  $('#cut-method').change(function () {
+  $('#method').change(function () {
     toggle_option()
   })
   $('.file-select').click(function () {
