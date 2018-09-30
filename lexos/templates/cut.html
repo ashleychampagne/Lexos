@@ -136,9 +136,8 @@
              hidden="{{ session['cut_option']['method'] != "milestone" }}">
             <span>
                 Cut documents on this term:
-                <label for="milestone-value">
-                    <input type="text" name="milestone-value"
-                           id="milestone-value"
+                <label for="milestone">
+                    <input type="text" name="milestone" id="milestone"
                            value="{{ session['cut_option']['milestone'] }}">
                 </label>
             </span>
@@ -150,7 +149,7 @@
     {% for (file_id, _, label, file_content) in previews %}
         <fieldset class="file-preview-wrapper" id={{ file_id }}>
             <legend class="file-label" style="color:#999;">
-                {{ label|truncate(36, True) }}
+                {{ label|truncate(50, True) }}
             </legend>
             <div>
                 {{ file_content|nl2br }}
