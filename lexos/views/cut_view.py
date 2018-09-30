@@ -1,4 +1,4 @@
-from flask import session, render_template, Blueprint
+from flask import session, render_template, Blueprint, jsonify
 from lexos.helpers import constants
 from lexos.managers import session_manager
 from lexos.models.cutter_model import CutterModel
@@ -60,5 +60,6 @@ def apply_cut():
     :return: cut files and their preview in a json object
     """
     session_manager.cache_cutting_options()
-    A = CutterModel()
-    return "ABC"
+    return jsonify(
+        result=CutterModel().get_cut_files()
+    )
