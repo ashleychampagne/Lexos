@@ -15,7 +15,7 @@ class CutByChunkOptions(NamedTuple):
     overlap_size: int
 
     # The smallest size the last segment has to be to become a single chunk.
-    last_proportion: int
+    last_prop: float
 
 
 class CutByNumberOfSegmentsOptions(NamedTuple):
@@ -90,7 +90,7 @@ class CutterReceiver(BaseReceiver):
                     cut_type=self._front_end_data["method"],
                     cut_size=int(self._front_end_data["chunk-size"]),
                     overlap_size=int(self._front_end_data["overlap"]),
-                    last_proportion=int(self._front_end_data["last-prop"])
+                    last_prop=int(self._front_end_data["last-prop"]) / 100
                 ),
                 active_file_ids=active_file_ids
             )
