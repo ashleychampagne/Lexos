@@ -178,7 +178,7 @@ def cut_by_lines(text: str, seg_size: int, overlap: int,
     return final_seg_list
 
 
-def cut_by_number(text: str, num_segment: int) -> List[str]:
+def cut_by_segments(text: str, num_segment: int) -> List[str]:
     """Cut the text by the input number of segment (equally sized).
 
     The chunks created will be equal in terms of word count, or line count if
@@ -295,7 +295,7 @@ def cut(text: str, cutting_value: str, cutting_type: str, overlap: str,
     elif cutting_type == 'milestone':
         string_list = cut_by_milestone(text=text, milestone=cutting_value)
     elif cutting_type == 'number':
-        string_list = cut_by_number(text=text, num_segment=cutting_value)
+        string_list = cut_by_segments(text=text, num_segment=cutting_value)
 
     # noinspection PyUnboundLocalVariable
     return string_list

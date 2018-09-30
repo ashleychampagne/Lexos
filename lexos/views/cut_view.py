@@ -61,5 +61,4 @@ def apply_cut():
     """
     session_manager.cache_cutting_options()
     A = CutterModel()
-    B = A._cutter_option
     return "ABC"
